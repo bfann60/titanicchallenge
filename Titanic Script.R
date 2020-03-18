@@ -33,17 +33,17 @@ table(full$IsTrain)
 #Clean Full DataSet
 full[full$Embarked == '', "Embarked"]
 
+#Categorical Casting
+full$Pclass <- as.factor(full$Pclass)
+full$Sex <- as.factor(full$Sex)
+full$Embarked <- as.factor(full$Embarked)
+
 age.predict <- randomForest(Age ~ Pclass+Sex+SibSp+Parch, data = na.omit(full), ntree = 500, mtry = 3)
 full[is.na(full$Age), "Age"] <- predict(age.predict, newdata = full[is.na(full$Age), ], type = "response")
 
 table(is.na(full$Fare))
 fare.predict <- randomForest(Fare~Pclass+Sex+Parch+SibSp+Embarked+Age, data = na.omit(full), ntree = 500, mtry = 3)
 full[is.na(full$Fare), "Fare"] <- predict(fare.predict, newdata = full[is.na(full$Fare),], type = "response")
-
-#Categorical Casting
-full$Pclass <- as.factor(full$Pclass)
-full$Sex <- as.factor(full$Sex)
-full$Embarked <- as.factor(full$Embarked)
 
 #Split Data back into Train and Test sets
 train1 <- full[full$IsTrain == TRUE, ]
